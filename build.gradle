@@ -1,28 +1,48 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
-group 'com.github.arthurpicht'
-version '0.0.1'
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-    }
-}
+group 'de.arthurpicht'
+version '0.0.2'
+def artifact = 'ap-utils-logging'
 
 repositories {
+    maven { url "https://raw.githubusercontent.com/arthurpicht/mvn-repo/main/releases"}
     mavenCentral()
-    maven { url "https://jitpack.io" }
 }
 
 dependencies {
-    implementation 'com.github.arthurpicht:utils-core:1.8.0'
+    implementation 'de.arthurpicht:ap-utils-core:1.19.0'
     implementation 'ch.qos.logback:logback-classic:1.2.11'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 test {
     useJUnitPlatform()
+}
+
+base {
+    archivesName = artifact
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = artifact
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url = layout.buildDirectory.dir(project.gradle.gradleUserHomeDir.parent + "/gitrepos/ap/mvn-repo/releases")
+        }
+    }
 }
