@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'de.arthurpicht'
-version '0.0.2'
+version '0.0.3-SNAPSHOT'
 def artifact = 'ap-utils-logging'
 
 repositories {
@@ -13,11 +13,13 @@ repositories {
 }
 
 dependencies {
-    implementation 'de.arthurpicht:ap-utils-core:1.19.0'
-    implementation 'ch.qos.logback:logback-classic:1.2.11'
+    implementation 'de.arthurpicht:ap-utils-core:1.22.0'
+    implementation 'ch.qos.logback:logback-classic:1.5.2'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
+    testImplementation 'de.arthurpicht:ap-utils-io:0.0.24'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 java {
