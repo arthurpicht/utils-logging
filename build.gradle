@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'de.arthurpicht'
-version '0.0.3-SNAPSHOT'
+version '0.0.3'
 def artifact = 'ap-utils-logging'
 
 repositories {

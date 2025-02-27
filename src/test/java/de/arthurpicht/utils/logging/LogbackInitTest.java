@@ -1,7 +1,6 @@
 package de.arthurpicht.utils.logging;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
 import de.arthurpicht.utils.io.file.TextFileUtils;
 import de.arthurpicht.utils.io.nio2.FileUtils;
 import de.arthurpicht.utils.io.tempDir.TempDir;
@@ -19,14 +18,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LoggerInitTest {
+class LogbackInitTest {
 
     private static TempDir tempDir;
 
     @BeforeAll
     public static void setup() {
         tempDir = new TempDir.Creator()
-                .withAutoRemove(false)
+                .withAutoRemove(true)
                 .withParentDir(".")
                 .withTempDirPrefix("temp-test-")
                 .create();
@@ -34,15 +33,14 @@ class LoggerInitTest {
 
     @AfterEach
     public void resetLogBack() {
-        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        loggerContext.reset();
+        LogbackUtils.resetConfiguration();
     }
 
     @Test
     public void defaultLogFile() throws IOException {
         Path logFilePath = tempDir.asPath().resolve("defaultLog.log");
 
-        new LoggerInit()
+        new LogbackInit()
                 .addLogFile(new LogFile.Builder()
                         .withPath(logFilePath)
                         .build())
@@ -62,7 +60,7 @@ class LoggerInitTest {
     public void logFileOnDebugLevel() throws IOException {
         Path logFilePath = tempDir.asPath().resolve("logOnDebugLevel.log");
 
-        new LoggerInit()
+        new LogbackInit()
                 .addLogFile(new LogFile.Builder()
                         .withPath(logFilePath)
                         .withLevel(Level.DEBUG)
@@ -85,7 +83,7 @@ class LoggerInitTest {
         Path logFilePath = tempDir.asPath().resolve("logFileRoot.log");
         Path logFileBPath = tempDir.asPath().resolve("logFileB.log");
 
-        new LoggerInit()
+        new LogbackInit()
                 .addLogFile(new LogFile.Builder()
                         .withPath(logFilePath)
                         .build())
@@ -117,7 +115,7 @@ class LoggerInitTest {
     public void differentLogLevelForSubLogger() throws IOException {
         Path logFilePath = tempDir.asPath().resolve("logFileRoot.log");
 
-        new LoggerInit()
+        new LogbackInit()
                 .addLogFile(new LogFile.Builder()
                         .withPath(logFilePath)
                         .withLevel(Level.DEBUG)
@@ -139,8 +137,16 @@ class LoggerInitTest {
         assertTrue(lines.get(lines.size() - 3).endsWith("[INFO] dummy - on dummy logger"));
         assertTrue(lines.get(lines.size() - 2).endsWith("[DEBUG] dummy - statement on debug level to dummy logger"));
         assertTrue(lines.getLast().endsWith("[INFO] a.b - on logger a.b"));
+
+        System.out.println("logback configuration:");
+        System.out.println(LogbackUtils.getStatusPrint());
+
+        System.out.println("---");
+
+        System.out.println(LogbackConfigStatus.get());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void defaultLogFileWithConsole() {
         Path logFilePath = tempDir.asPath().resolve("defaultLogWithConsole.log");
@@ -150,7 +156,7 @@ class LoggerInitTest {
         PrintStream savedOutStream = System.out;
         System.setOut(outStream);
 
-        new LoggerInit()
+        new LogbackInit()
                 .addLogFile(new LogFile.Builder()
                         .withPath(logFilePath)
                         .build())
@@ -161,7 +167,7 @@ class LoggerInitTest {
         logger.info("Hello World");
         logger.debug("statement on debug level");
 
-        Logger consoleLogger = LoggerFactory.getLogger(LoggerInit.CONSOLE_LOGGER);
+        Logger consoleLogger = LoggerFactory.getLogger(LogbackInit.CONSOLE_LOGGER);
         consoleLogger.info("statement on debug level to console");
 
         System.setOut(savedOutStream);

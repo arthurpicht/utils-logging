@@ -1,6 +1,7 @@
 package de.arthurpicht.utils.logging;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 
 import java.nio.file.Path;
 
@@ -15,8 +16,8 @@ public class LogFile {
 
     public static class Builder {
         private Path path;
-        private String logger = LoggerInit.ROOT_LOGGER;
-        private String layout = LoggerInit.DEFAULT_LAYOUT_FILE;
+        private String logger = Logger.ROOT_LOGGER_NAME;
+        private String layout = LogbackInit.DEFAULT_LAYOUT_FILE;
         private Level level = Level.INFO;
 
         public Builder withPath(Path path) {
